@@ -8,6 +8,9 @@ import "nprogress/nprogress.css"
 import { server } from './misc/request/server'
 import api from './misc/request/api'
 import pkg from "@/misc/cryptography/encryption"
+import "@tikz/hedera-mirror-node-ts/dist/RestMirrorNode/baseClasses"
+import "@tikz/hedera-mirror-node-ts/dist/RestMirrorNode/helpers"
+
 
 const app = createApp(App)
 
