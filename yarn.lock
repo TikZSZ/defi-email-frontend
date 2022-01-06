@@ -504,9 +504,9 @@
   integrity sha512-RNiOoTPkptFtSVzQevY/yWtZwf/RxyVnPy/OcA9HBM3MlGDnBEYL5B41H0MTn0Uec8Hi+2qUtTfG2WWZBmMejQ==
 
 "@tikz/hedera-mirror-node-ts@^2.1.4":
-  version "2.1.6"
-  resolved "https://registry.yarnpkg.com/@tikz/hedera-mirror-node-ts/-/hedera-mirror-node-ts-2.1.6.tgz#9c7ccde2b8a488372192f1b8b8ca713312d0bc59"
-  integrity sha512-W1jENZzNRhuUobA3xR6n2fVlcnjDMj8RzScqCTue9blj2eGdFML88jpT2iY31B68kDwydf5Jh+dP/O3QUpg4TA==
+  version "2.1.7"
+  resolved "https://registry.yarnpkg.com/@tikz/hedera-mirror-node-ts/-/hedera-mirror-node-ts-2.1.7.tgz#c5a6b750d837633b81f6ed9db2053d54d4f58e06"
+  integrity sha512-PFSQE8qbNzcvXTKtdgeu6PXPMbDeVBNALfpHdKSsc2WrWgqO5p56A/k+T3w1mAGCZcN0CkRFDG3rxCJgUUIquQ==
   dependencies:
     axios "^0.24.0"
 
