@@ -4,6 +4,7 @@ import { useStore } from "@/store";
 import { useRoute, useRouter } from "vue-router";
 import Sidebar from "@/components/Dashboard/Sidebar/Sidebar.vue";
 import { useClickOutside } from "@/components/useOutsideClick";
+import { pkg } from "@/misc/cryptography/encryption";
 
 const { currentPath } = toRefs(useStore())
 const isOpen = ref(false)
@@ -12,13 +13,16 @@ const toggle = (val: boolean) => {
   isOpen.value = val
 }
 
+
 const router = useRouter()
 const route = useRoute()
 const sideBarRef = ref()
 useClickOutside(sideBarRef, isOpen)
 currentPath.value = route.name === "Dashboard" ? "/dashboard/topics" : route.path
-
 router.push({ path: currentPath.value })
+const init = (async () =>{
+  await pkg.ready
+})
 
 </script>
 

@@ -1,5 +1,8 @@
 import { useStore } from "@/store";
+import CreateTopic from "@/views/CreateTopic.vue";
+import DashboardVue from "@/views/Dashboard.vue";
 import Email from "@/views/Dashboard/Email.vue";
+import Topics from "@/views/Dashboard/Topics.vue";
 import SignUp from "@/views/SignUp.vue";
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
@@ -29,17 +32,17 @@ const router = createRouter({
 			meta: {
 				requiresAuth: true,
 			},
-			component: () => import("@/views/Dashboard.vue"),
+			component: DashboardVue,
 			children: [
 				{
 					path: "topics",
 					name: "Topics",
-					component: () => import("@/views/Dashboard/Topics.vue"),
+					component: Topics,
 				},
         {
           path: "dashboard/createTopic",
           name: "CreateTopic",
-          component: () => import("@/views/CreateTopic.vue"),
+          component: CreateTopic,
         },
         {
           path: "compose",

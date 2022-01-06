@@ -1,7 +1,7 @@
 import { PublicKey } from "@hashgraph/sdk";
 import {MessagesResponse } from "@tikz/hedera-mirror-node-ts";
 import { decodeBase64, encodeUTF8 } from "tweetnacl-util";
-import pkg from "./cryptography/encryption";
+import {pkg} from "./cryptography/encryption";
 
 
 const decrypt = (

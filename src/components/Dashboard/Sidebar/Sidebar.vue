@@ -117,7 +117,7 @@ const d = (async () => {
 								: 'hover:text-gray-800 border-transparent text-gray-400'
 						} `"
 						:icon="emails.icon"
-            v-if="topics"
+            v-if="topics && topics.length>0"
             >
               <Dropdown :topics="topics"/>
             </Option>
