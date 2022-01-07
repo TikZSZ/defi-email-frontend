@@ -62,32 +62,28 @@ const sign = async (privateKey: string) => {
 			<!-- Prompt -->
 			<Prompt v-if="prompt" :sign="sign" :disabled="disabled" />
 
-			<div class="flex flex-col lg:flex-row" v-show="!prompt">
+			<div class="flex flex-col  lg:flex-row" v-show="!prompt" :style="{minHeight:'100vh'}">
 				<!-- Left Div -->
 				<div
-					class="w-full bg-cover lg:w-6/12 xl:w-6/12 bg-gradient-to-r from-white via-white to-gray-100 min-h-screen"
+					class="w-full bg-cover lg:w-6/12 xl:w-6/12 bg-gradient-to-r from-white via-white to-gray-100 min-h-full order-last lg:order-first"
+          
 				>
 					<div
 						class="relative flex flex-col items-center justify-center w-full h-full px-10 my-20 lg:px-16 lg:my-0"
 					>
 						<div class="flex flex-col items-start space-y-8 tracking-tight lg:max-w-3xl">
 							<div class="relative">
-								<p class="mb-2 font-medium text-gray-700 uppercase">Work smarter</p>
-								<h2 class="text-5xl font-bold text-gray-900 xl:text-6xl">Features to help you work smarter</h2>
+								<!-- <p class="mb-2 font-medium text-gray-700 uppercase">Work smarter</p> -->
+								<h2 class="text-5xl font-bold text-gray-900 xl:text-6xl">Topics</h2>
 							</div>
 							<p class="text-2xl text-gray-700">
-								We've created a simple formula to follow in order to gain more out of your business and your
-								application.
+								In order to provide storage, we need a way to store data on chain. For this topics are used. Topics are like mailbox that exists on Hedera Hashgraph. To send and receive mails we use id of these topics. 
 							</p>
-							<a
-								href="#_"
-								class="inline-block px-8 py-5 text-xl font-medium text-center text-white transition duration-200 bg-blue-600 rounded-lg hover:bg-blue-700 ease"
-							>Get Started Today</a>
 						</div>
 					</div>
 				</div>
 				<!-- Right Div -->
-				<div class="w-full bg-white lg:w-6/12 xl:w-6/12 min-h-screen">
+				<div class="w-full bg-white lg:w-6/12 xl:w-6/12 ">
 					<div class="flex flex-col items-start justify-start w-full p-10 lg:p-16 xl:p-24">
 						<h4 class="w-full text-3xl font-bold">Create Topic</h4>
 						<form @submit.prevent="submit" class="relative w-full mt-10 space-y-8">

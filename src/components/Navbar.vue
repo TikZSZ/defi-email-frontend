@@ -20,7 +20,7 @@ const logOut = async () => {
 
 
 <template>
-	<div class="w-full antialiased bg-white border-b ">
+	<div class="w-full px-5 md:px-0 antialiased transition-all bg-white border-b ">
 		<div class="mx-auto ">
 			<nav class="relative z-10 h-24 select-none">
 				<div
@@ -44,15 +44,14 @@ const logOut = async () => {
 						:class="{ 'flex fixed': showMenu, hidden: !showMenu }"
 					>
 						<div
-							class="flex-col w-full h-auto overflow-hidden bg-white rounded-lg lg:bg-transparent lg:overflow-visible lg:rounded-none lg:relative lg:flex lg:flex-row"
+							class="flex-col  w-full h-auto overflow-hidden bg-white rounded-lg lg:bg-transparent lg:overflow-visible lg:rounded-none lg:relative lg:flex lg:flex-row"
 						>
 							<!-- Logo -->
 							<router-link
 								:to="{ name: 'Home' }"
 								class="items-center block w-auto h-16 mt-5 px-6 text-xl font-black leading-none text-gray-900 lg:hidden"
 							>
-								factura
-								<span class="text-indigo-600">.</span>
+								dMail<span class="text-indigo-600">.</span>
 								<span
 									class="relative -top-2 right-0 px-2 py-0.5 -mt-3 -mr-6 text-xs font-medium leading-tight text-white bg-indigo-600 rounded-full"
 								>Beta</span>
@@ -63,7 +62,9 @@ const logOut = async () => {
 							>
 								<NavLinkVue @click="showMenu = false" name="Home" to="/home" />
 								<NavLinkVue @click="showMenu = false" name="Dashboard" to="/dashboard" v-if="store.accountId" />
+								<NavLinkVue @click="showMenu = false" name="IDs" to="/ids" />
 								<NavLinkVue @click="showMenu = false" name="About" to="/about" />
+
 							</div>
 							<!-- Auth Buttons -->
 							<div
@@ -98,7 +99,7 @@ const logOut = async () => {
 					<div
             ref="elRef"
 						@click="showMenu = !showMenu"
-						class="absolute right-0 flex flex-col items-end justify-center w-10 h-10 bg-white rounded-full cursor-pointer lg:hidden hover:bg-gray-100"
+						class="relative right-4 flex flex-col items-end justify-center w-10 h-10 rounded-full cursor-pointer lg:hidden lg:hover:bg-gray-100"
 					>
 						<svg
 							class="w-6 h-6 text-gray-700"
@@ -112,22 +113,6 @@ const logOut = async () => {
 							x-cloak
 						>
 							<path d="M4 6h16M4 12h16M4 18h16" />
-						</svg>
-						<svg
-							class="w-6 h-6 text-gray-700"
-							v-else="showMenu"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-							xmlns="http://www.w3.org/2000/svg"
-							x-cloak
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M6 18L18 6M6 6l12 12"
-							/>
 						</svg>
 					</div>
 				</div>

@@ -4,23 +4,24 @@ import {
   MessagesResponse,
   topicMessages,
 } from "@tikz/hedera-mirror-node-ts";
-import { onBeforeRouteUpdate } from "vue-router";
+import { onBeforeRouteUpdate,useRouter } from "vue-router";
 import { ref } from "vue";
 import { localKeys } from "@/misc/localstorage/setKeys";
 import Loading from "@/components/Loading.vue";
 import LoadingButton from "@/components/LoadingButton.vue";
 import { decryptMessages } from "@/misc/decryptMessages";
+import { Message} from "@/misc/interface/Message"
 
 const props = defineProps<{ topicId: string }>();
 const client = new Client("https://testnet.mirrornode.hedera.com/");
 const msgCursor = topicMessages(client)
-  .setLimit(1)
+  .setLimit(10)
   .order("desc")
   .setTopicId(props.topicId);
 
 const loading = ref(false);
 const hasMore = ref<boolean>(false);
-const msgs = ref<{ body: string; subject: string; date: string }[] | null>([]);
+const msgs = ref<(Message & {x25519_public_key:string})[] | null>([]);
 let rawMessages = ref<MessagesResponse | null>(null);
 
 const fetch = async () => {
@@ -46,7 +47,6 @@ const getNext = async () => {
   try {
     const { privateKey } = localKeys.getKeys.value;
     const topicMsgs = await msgCursor.next();
-    console.log(topicMsgs);
     rawMessages.value!["messages"] = [
       ...topicMsgs!["messages"].reverse(),
       ...rawMessages.value!["messages"],
@@ -66,15 +66,20 @@ const getNext = async () => {
   }
   loading.value = false;
 };
+const router = useRouter()
 
-onBeforeRouteUpdate(async (record) => {
+
+onBeforeRouteUpdate(async (to,from,next) => {
   msgs.value = [];
   rawMessages.value = null
   loading.value = false
   hasMore.value = false
-  msgCursor.setTopicId(record.params["topicId"] as string);
-  fetch();
+  msgCursor.setTopicId(to.params["topicId"] as string);
+  await fetch();
+  next()
 });
+
+
 </script>
 
 <template>
@@ -85,7 +90,7 @@ onBeforeRouteUpdate(async (record) => {
         class="mx-auto w-1/2 relative m-6 h-10"
       >
         <LoadingButton
-          :class="'absolute text-white inline-flex items-center  py-3  font-medium leading-4 bg-indigo-600 w-full rounded-full px-5 hover:bg-indigo-500 focus:outline-none  focus:ring-0 focus:ring-offset-2 focus:ring-indigo-600 text-base'"
+          class="absolute text-white inline-flex items-center  py-3  font-medium leading-4 bg-indigo-500 sm:bg-indigo-600 w-full rounded-full px-5 hover:bg-indigo-500 focus:outline-none  focus:ring-0 focus:ring-offset-2 focus:ring-indigo-600 text-base"
           name="View More"
           :disabled="loading"
           @click="getNext"
@@ -96,19 +101,19 @@ onBeforeRouteUpdate(async (record) => {
       </div>
       <div
         v-if="!hasMore && rawMessages !== null"
-        class="bg-rose-600 mx-auto text-lg text-white py-5 text-center rounded"
+        class="bg-rose-600 mx-auto mb-10 text-lg text-white py-5 text-center rounded"
       >
         You have reached the end
       </div>
-      <Loading :active="loading" class="mb-10 mt-2 w-full px-4" />
-      <router-link
+      <Loading :active="loading" class="mb-10 mt-2 w-full sm:px-4" />
+      <div
         v-if="msgs"
         v-for="msg of msgs"
         class="anim"
-        :to="`/dashboard/email?subject=${msg.subject}&date=${msg.date}&body=${msg.body}`"
+        @click="router.push(`/dashboard/email?subject=${msg.subject}&date=${msg.date}&body=${msg.body}&key=${msg.x25519_public_key}&topicId=${msg.topicId}`)"
       >
         <div
-          class="px-2 md:px-10 py-3 flex justify-between bg-gray-100 w-full transition-all mx-auto hover:shadow-xl hover:bg-white shadow-inner relative rounded-md mt-1 border-2 border-gray-300 transform-gpu"
+          class="px-2 md:px-10 py-3 flex justify-between bg-gray-100 w-full transition-all mx-auto hover:shadow-xl hover:bg-white shadow-inner relative rounded-md mt-2 border-2 border-gray-300 transform-gpu"
         >
           <p class="text-sm md:text-lg">{{ msg.subject }}</p>
           <p class="text-sm sm:text-lg right-0 relative">
@@ -116,7 +121,7 @@ onBeforeRouteUpdate(async (record) => {
           </p>
         </div>
         <!-- <div class="bg-black h-px"></div> -->
-      </router-link>
+      </div>
     </div>
   </div>
 </template>

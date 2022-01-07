@@ -1,29 +1,39 @@
 <script setup lang="ts">
-import { Client } from "@tikz/hedera-mirror-node-ts";
 import { ref } from "vue";
-const props = defineProps<{ 
-  body:string,
-  subject:string,
-  date:string,
+import { LocationQuery, LocationQueryValue, useRoute } from "vue-router";
+const props = defineProps<{
+  body: string,
+  subject: string,
+  date: string,
 }>();
-const client = new Client("https://testnet.mirrornode.hedera.com/");
-// const loading = ref(true)
 
 console.log(props)
-const msgs = ref<{ body: string; subject: string; date: string }[]|null>([]);
+const route = useRoute()
+const topicId = ref<LocationQueryValue>(null)
+const key = ref(route.query['key'])
+route.query['topicId']!=='undefined' && (topicId.value = route.query['topicId'] as string )
+
 </script>
 
 <template>
-  <div class="min-h-screen relative">
-    <div >
-      <div class="py-5 px-5 relative">
-        <div class="relative mx-2 md:mx-10">
+  <div class="relative min-h-screen">
+    <div class>
+      <div class="py-5 px-2 sm:px-5 relative">
+        <div class="relative rounded-xl border-gray-300 shadow-xl p-5 border">
           <h1 class="text-2xl mb-10">{{ props.subject }}</h1>
-          <div class="">
-            <p class="date absolute top-16 sm:top-12 right-0">{{ new Date(props.date).toString() }}</p>
-            <p class="w-full whitespace-pre-line   mt-20">{{ props.body }}</p>
+          <div class>
+            <p
+              class="date absolute top-16 right-5"
+            >{{ new Date(props.date).toString().split(' ').splice(0, 5).join(' ') }}</p>
+            <p
+              class="w-full rounded-md p-4 whitespace-pre-line mt-20 overflow-auto"
+            >{{ props.body }}</p>
           </div>
         </div>
+        <div v-if="topicId" class="mt-5 w-full mx-auto">
+          <router-link class="mt-2 inline-block focus:outline-none text-center rounded w-2/12 shadow text-white hover:bg-rose-600 bg-rose-500 py-2 px-4" :to="`/dashboard/compose?key=${key}&topicId=${topicId}`">Reply</router-link>
+        </div>
+        
       </div>
     </div>
   </div>

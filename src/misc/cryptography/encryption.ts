@@ -162,11 +162,16 @@ export function decrypt({ X25519PrivateKey, msg, theirX25519PublicKey, signature
   const [sessionNonce,encryptedMessage] = unpack(encryptedMessageWithNonce,NONCE_LENGTH)
   const decryptedSessionKey = X25519PrivateKey.decrypt(encryptedSessionKey,nonce, theirX25519PublicKey.toBytes())
   if (!decryptedSessionKey) throw new Error('cannot decrypt session key')
-  const UIntMsgWithHash = s.crypto_secretbox_open_easy(encryptedMessage, sessionNonce, decryptedSessionKey)
-  if (!UIntMsgWithHash) throw new Error('cannot decrypt message')
-  const decompressed = decompress(UIntMsgWithHash)
+  const UIntMsgWithSig = s.crypto_secretbox_open_easy(encryptedMessage, sessionNonce, decryptedSessionKey)
+  if (!UIntMsgWithSig) throw new Error('cannot decrypt message')
+  const decompressed = decompress(UIntMsgWithSig)
   const [UInt8Signature, UInt8Msg] = unpack(decompressed, SIGNATURE_LENGTH)
-  if (!verify(UInt8Msg, UInt8Signature, signatureKey instanceof PublicKey ? signatureKey.toBytes() : signatureKey)) throw new Error('Message signature mismatch')
+  let isVerified:boolean = false
+  try{
+    isVerified =verify(UInt8Msg, UInt8Signature, signatureKey instanceof PublicKey ? signatureKey.toBytes() : signatureKey)
+  }catch(err){
+    isVerified = false
+  }
   return encodeUTF8(UInt8Msg)
 }
 

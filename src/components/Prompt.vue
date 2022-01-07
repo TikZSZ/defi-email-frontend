@@ -5,6 +5,7 @@ import { required, minLength, } from "@vuelidate/validators";
 import ButtonSpinner from './ButtonSpinner.vue';
 import InputError from './InputError.vue';
 import { helpers } from "@vuelidate/validators";
+import { localKeys } from '@/misc/localstorage/setKeys';
 
 const props = defineProps<{ sign: (privateKey: string) => void,disabled?:boolean }>()
 const privateKey = reactive({privateKey:''})
@@ -15,6 +16,7 @@ const v$ = useVuelidate(rules,privateKey)
 const submit = async () => {
   const isValid = await v$.value.$validate()
   if(!isValid) return
+  localKeys.setKeys({privateKey:privateKey.privateKey})
   props.sign(privateKey.privateKey)
 }
 </script>

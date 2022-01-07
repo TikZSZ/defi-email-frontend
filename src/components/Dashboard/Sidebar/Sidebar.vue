@@ -81,15 +81,11 @@ const d = (async () => {
 
 <template>
 	<div
-		class="lg:block absolute "
+		class="lg:block absolute border-r-2 md:border-0"
 		:class="{ 'absolute w-52 z-20': isMobile, 'relative w-80': !isMobile, hidden: !isOpen }"
 	>
-		<div class="bg-white overflow-hidden">
-			<div class="flex items-center justify-start pt-6 ml-8">
-				<p class="font-bold  text-xl">Plannifer</p>
-			</div>
-
-			<nav class="mt-6 min-h-screen">
+		<div class="bg-white min-h-screen border-r-1">
+			<nav class="mt-6 ">
 				<div>
 					<Option
 						v-for="option in options"

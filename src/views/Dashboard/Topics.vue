@@ -15,6 +15,8 @@ interface Topics {
   date_created: string;
 }
 
+const topic_id = ref<number|null>(null)
+
 interface User {
   public_key: string;
   x25519_public_key: string;
@@ -30,13 +32,23 @@ const getTime = (time:string) => {
   return t.slice(0,5).join(' ')
 }
 
+async function deleteTopic(id:number){
+  topic_id.value = id
+  await api.get(`/api/deleteTopic/${id}`)
+  topics.value!.map((topic,i) => {
+    if(topic.topic_id === id){
+      topics.value!.splice(i,1)
+    }
+  })
+  topic_id.value =null
+}
+
 </script>
 
 Prisma
 <template>
 	<div class="relative mx-auto w-full ">
 		<Loading :active="!topics" />
-
 		<div v-if="topics && topics.length === 0" class="bg-white min-h-screen">
 			<div
 				class="lg:flex lg:items-center lg:justify-between w-full mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 z-20"
@@ -113,7 +125,12 @@ Prisma
 										</span>
 									</td> -->
 									<td class=" border-b border-gray-200 leading-6 bg-white text-sm">
-										<LoadingButtonVue name="Delete Topic" :disabled="false"  class="w-40 py-1 mt-2 bg-blue-500 rounded-lg"/>
+										<LoadingButtonVue name="Delete Topic" :disabled="!!topic_id && topic_id === topic.topic_id"
+                      class="w-40 py-1 mt-2 bg-blue-500 rounded-lg"
+                      @click="() => {
+                        deleteTopic(topic.topic_id)
+                      }"
+                      />
 										<div class="my-2"></div>
 										<LoadingButtonVue name="View Emails" :disabled="false"  class="w-40 py-1 mb-2 bg-blue-500 rounded-lg" @click="router.push({path:`/dashboard/emails/${topic.topicId}/`})"/>
 										<br>

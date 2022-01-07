@@ -4,7 +4,7 @@ import { useStore } from "@/store";
 import { useRouter } from "vue-router";
 import Prompt from "@/components/Prompt.vue";
 import useVuelidate from "@vuelidate/core";
-import { required, minLength, } from "@vuelidate/validators";
+import { required, minLength, maxLength,helpers } from "@vuelidate/validators";
 import { validAccountId } from "@/misc/validUserAccID";
 import InputError from "@/components/InputError.vue";
 import { X25519PrivateKey } from "@/misc/cryptography/encryption";
@@ -24,7 +24,7 @@ const submitData = reactive({
 const rules: { [key in keyof typeof submitData]: any } = {
   name: { required },
   userAccountId: validAccountId,
-  public_key: { required, minLength: minLength(80) }
+  public_key: { required, minLength: helpers.withMessage('Public key should be 88 characters',minLength(88)) ,maxLength:helpers.withMessage('Public key should be 88 characters',maxLength(88)) }
 }
 
 const v$ = useVuelidate(rules, submitData)
@@ -72,13 +72,18 @@ const sign = async (privateKey: string) => {
               </div>
               <p
                 class="text-2xl text-gray-700"
-              >We've created a simple method for signup/signin without email and password powered by next gen decentralised services</p>
+              >We've created a simple method for signin/signup without email and password powered by cryptography</p>
               <p
                 class="text-xl text-red-400"
-              >Note 1: Your private key never leaves the browser all transactions are signed in browser by you.</p>
+              >Note 1: Your private key never leaves the browser all transactions are signed in browser.</p>
               <p
                 class="text-xl text-red-400"
-              >Note 2: Since factura is in alpha stage, Currently only testnet accounts are supported</p>
+              >Note 2: Your private keys are saved in local storage for subsequent use.
+              If you don't want that then u can delete the key and you will need to provide it again when required.
+              </p>
+              <p
+                class="text-xl text-red-400"
+              >Note 3: Since dMail is in beta stage, currently only testnet accounts are supported</p>
             </div>
           </div>
         </div>

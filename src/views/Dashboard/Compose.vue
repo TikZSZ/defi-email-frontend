@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { reactive, ref, toRefs } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { useStore } from "@/store";
 import Prompt from "@/components/Prompt.vue";
 import useVuelidate from "@vuelidate/core";
@@ -14,11 +14,11 @@ import { PrivateKey } from "@hashgraph/sdk";
 import { encrypt } from "@/misc/encrypt";
 import { decodeUTF8 } from "tweetnacl-util";
 import { getChunks } from "@/misc/getChunks";
+import { Message} from "@/misc/interface/Message"
 
 const prompt = ref(false);
 const router = useRouter();
 const disabled = ref(false);
-const store = toRefs(useStore());
 
 const submitData = reactive({
   topicId: '',
@@ -34,10 +34,19 @@ const rules: { [key in keyof typeof submitData]: any } = {
   x25519_public_key: { required },
 }
 
+const route = useRoute()
+Object.keys(route.query).includes('topicId') && (submitData.topicId = route.query['topicId'] as string)
+Object.keys(route.query).includes('key') && (submitData.x25519_public_key = route.query['key'] as string)
+
+
 const v$ = useVuelidate(rules, submitData)
+const twoWay = ref(false);
+const receiverTopicId = ref('')
+const v$r = useVuelidate({ receiverTopicId: validAccountId }, { receiverTopicId })
 
 const submit = async () => {
   const isValid = await v$.value.$validate()
+  twoWay.value && (await v$r.value.$validate())
   if (!isValid) return
   const privateKey = localKeys.getKeys.value.privateKey
   if (!privateKey) return prompt.value = true;
@@ -50,18 +59,23 @@ const sign = async (privateKey: string) => {
   disabled.value = true
   try {
     const { subject, message, x25519_public_key } = submitData
-    const { encryptedMessage, x25519PubK } = encrypt(message, subject, privateKey, x25519_public_key)
+    const msgToEncrypt:Message = {
+      body: message,
+      subject,
+      date: new Date().toUTCString()
+    }
+    twoWay.value && (msgToEncrypt['topicId'] = receiverTopicId.value)
+    const { encryptedMessage, x25519PubK } = encrypt(JSON.stringify(msgToEncrypt), privateKey, x25519_public_key)
     const msgToSendUint8 = decodeUTF8(JSON.stringify({
       message: encryptedMessage,
       x25519_public_key: x25519PubK,
       ed25519_public_key: PrivateKey.fromString(privateKey).publicKey.toStringDer()
     }))
-
     const msgToSendUint8WithChunks = new Uint8Array(2 + msgToSendUint8.length)
     msgToSendUint8WithChunks.set(msgToSendUint8, 2)
     const chunks = getChunks(msgToSendUint8WithChunks)
     msgToSendUint8WithChunks.set(decodeUTF8(chunks.toString()))
-    
+
     const record = await sendToConsensus(submitData.topicId, msgToSendUint8WithChunks, privateKey)
 
     if (!record) throw new Error('no receipt for topic create txn')
@@ -81,7 +95,6 @@ const sign = async (privateKey: string) => {
     <div class="mx-auto max-w-7xl">
       <!-- Prompt -->
       <Prompt v-if="prompt" :sign="sign" :disabled="disabled" />
-
       <div class="flex flex-col lg:flex-col" v-show="!prompt">
         <!-- Upper Div -->
         <div class="w-full bg-white">
@@ -127,6 +140,35 @@ const sign = async (privateKey: string) => {
                 />
                 <InputError :errors="v$.x25519_public_key.$errors || []" />
               </div>
+              <div class="relative">
+                <div
+                  class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"
+                >
+                  <input
+                    type="checkbox"
+                    name="toggle"
+                    id="toggle"
+                    class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
+                    @click="() => { twoWay = !twoWay; }"
+                  />
+                  <label
+                    for="toggle"
+                    class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"
+                  ></label>
+                </div>
+                <label for="toggle" class="text-sm text-gray-700">Add Topic ID for replies</label>
+              </div>
+              <div class="relative" v-if="twoWay">
+                <label class="font-medium text-gray-900">Topic ID</label>
+                <input
+                  type="text"
+                  class="block w-full px-4 py-4 mt-2 text-xl placeholder-gray-400 bg-gray-200 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-600 focus:ring-opacity-50"
+                  v-model="v$r.receiverTopicId.$model"
+                  placeholder="Topic Id"
+                />
+                <InputError :errors="v$r.receiverTopicId.$errors || []" />
+              </div>
+
               <div class="relative">
                 <label class="font-medium text-gray-900">
                   Compose Email
@@ -179,3 +221,15 @@ const sign = async (privateKey: string) => {
     </div>
   </div>
 </template>
+
+<style lang="css">
+.toggle-checkbox:checked {
+  @apply: right-0 border-green-400;
+  right: 0;
+  border-color: #68d391;
+}
+.toggle-checkbox:checked + .toggle-label {
+  @apply: bg-green-400;
+  background-color: #68d391;
+}
+</style>
