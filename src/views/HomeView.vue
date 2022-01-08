@@ -47,12 +47,12 @@ const store = toRefs(useStore())
           <router-link :to="{ name: 'About' }" class="mt-3 text-sm text-indigo-500">Learn More</router-link>
         </div>
         <h1 class="text-gray-500 mt-3">
-          <span class="font-bold">Note:</span>
+          <span class="font-bold">Note: </span>
           <a
             class="text-indigo-600 underline"
             target="_blank"
             href="https://docs.hedera.com/guides/testnet/testnet-access"
-          >Hedera Testnet Account</a> is required to use dMail.
+          >   Hedera Testnet Account</a> is required to use dMail.
         </h1>
       </div>
       <!-- End Main Hero Content -->

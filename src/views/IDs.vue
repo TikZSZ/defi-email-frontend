@@ -8,6 +8,7 @@ const topics = ref<Topic[]|null>(null)
 const topicId = ref('')
 const topic_id = ref(0)
 const disabled = ref(false)
+const hasMore = ref(false)
 interface Topic {
   topicId: string;
   topic_id: number;
@@ -22,12 +23,14 @@ interface User {
 const fetch = async () => {
   const response = await api.get(`/api/getTopics?topicId=${topicId.value}&id=${topic_id.value}`)
   topics.value = response.data 
+  if(response.data.length === 0) hasMore.value = false
+  else hasMore.value = true
 }
 fetch()
 let id:any = ref()
 
 watch(topicId,()=>{
-  topics.value = []
+  topics.value = null
   clearTimeout(id.value)
   id.value = setTimeout(()=>{
     topic_id.value = 0
@@ -40,6 +43,8 @@ async function getNext(){
   topic_id.value = topics.value!.slice(-1)[0].topic_id
   const response = await api.get(`/api/getTopics?topicId=${topicId.value}&id=${topic_id.value}`)
   topics.value!.push(...response.data)  
+  if(response.data.length === 0) hasMore.value = false
+  else hasMore.value = true
   disabled.value = false
 }
 
@@ -60,12 +65,14 @@ async function getNext(){
       </div>
     </div>
     <div class="mx-auto w-1/4 mb-5">
-      <LoadingButton name="Fetch More" @click="getNext"
+      <LoadingButton 
+      name="Fetch More" 
+      @click="getNext"
       class=" mx-auto"
-      v-if="topics !== null"
+      v-if="hasMore"
       :disabled="disabled"/>
     </div>
-    <Loading :active="topics === null || topics.length === 0" />
+    <Loading :active="topics === null" />
     <div class="grid  grid-cols-1 lg:grid-cols-2 xl:grid-cols-3  gap-4">
       <div class="bg-white p-3 shadow-xl  selection:text-white selection:rounded-xl selection:bg-rose-500  transition-shadow  hover:shadow-2xl border-1 border-gray-100 rounded-xl"
       v-for="topic of topics"
@@ -89,7 +96,7 @@ async function getNext(){
           >{{topic.user.public_key}}</span>
         </p>
       </div>
-      <Loading :active="disabled" class="w-full mt-0 h-auto" style="" />
+      <Loading :active="disabled"  :class="'w-full mt-0 h-auto'" style="width: 100%;" />
     </div>
   </div>
 </template>

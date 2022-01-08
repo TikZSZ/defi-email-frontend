@@ -25,12 +25,10 @@ interface User {
 const d = (async () => {
 	const { data } = await api.get<Topics[]>("/api/getTopicsByUser");
 	topics.value = data;
-})();
+})
 
-const getTime = (time:string) => {
-  const t = new Date(parseInt(time)*1000).toUTCString().split(" ")
-  return t.slice(0,5).join(' ')
-}
+d()
+
 
 async function deleteTopic(id:number){
   topic_id.value = id
@@ -42,10 +40,8 @@ async function deleteTopic(id:number){
   })
   topic_id.value =null
 }
-
 </script>
 
-Prisma
 <template>
 	<div class="relative mx-auto w-full ">
 		<Loading :active="!topics" />
@@ -90,13 +86,9 @@ Prisma
 									>Name</th>
 									<th
 										scope="col"
-										class="px-5 py-3 hidden md:block bg-white border-b border-gray-200 text-gray-800 text-left text-sm uppercase font-normal"
-									>Created at
+										class="px-5 py-3 md:block bg-white border-b border-gray-200 text-gray-800 text-left text-sm uppercase font-normal"
+									>X25519 Public Key
 									</th>
-									<!-- <th
-										scope="col"
-										class="px-5 py-3 bg-white border-b border-gray-200 text-gray-800 text-left text-sm uppercase font-normal"
-									>status</th> -->
 									<th
 										scope="col"
 										class="px-5 py-3 bg-white border-b border-gray-200 text-gray-800 text-left text-sm uppercase font-normal"
@@ -108,22 +100,16 @@ Prisma
 								<tr v-for="topic in topics">
 									<!-- Table Data Entries -->
 									<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-										<p class="text-gray-900 whitespace-no-wrap">{{ topic.topicId }}</p>
+										<p class="text-gray-900 select-all whitespace-no-wrap">{{ topic.topicId }}</p>
 									</td>
 									<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
 										<p class="text-gray-900 whitespace-no-wrap">{{ topic.topic_name }}</p>
 									</td>
-									<td class="px-5 py-5  hidden md:table-cell border-b border-gray-200 bg-white text-sm">
+									<td class="px-5 py-5  table-cell border-b border-gray-200 bg-white text-sm">
 										<p
-											class="text-gray-900 whitespace-no-wrap"
-										>{{ getTime(topic.date_created.split('.')[0]) }}</p>
+											class="text-gray-900 whitespace-no-wrap select-all break-all"
+										>{{ topic.user.x25519_public_key }}</p>
 									</td>
-									<!-- <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-										<span class="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
-											<span aria-hidden="true" class="absolute inset-0 bg-green-200 opacity-50 rounded-full"></span>
-											<span class="relative">{{ true }}</span>
-										</span>
-									</td> -->
 									<td class=" border-b border-gray-200 leading-6 bg-white text-sm">
 										<LoadingButtonVue name="Delete Topic" :disabled="!!topic_id && topic_id === topic.topic_id"
                       class="w-40 py-1 mt-2 bg-blue-500 rounded-lg"

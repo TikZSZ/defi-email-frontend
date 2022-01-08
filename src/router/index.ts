@@ -95,8 +95,6 @@ router.beforeEach(async (to, from, next) => {
 	const store = useStore();
 	const requiresAuth = to.matched.some((route) => route.meta.requiresAuth || false)
   let path:string
-	//console.log(to.path);
-	
 	if (!requiresAuth) {
     //console.log('no auth');
 		path = to.path;

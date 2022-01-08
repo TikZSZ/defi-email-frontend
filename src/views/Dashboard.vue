@@ -22,7 +22,7 @@ currentPath.value = route.name === "Dashboard" ? "/dashboard/topics" : route.pat
 router.push({ path: currentPath.value })
 const init = (async () =>{
   await pkg.ready
-})
+})()
 
 </script>
 

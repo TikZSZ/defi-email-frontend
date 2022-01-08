@@ -44,7 +44,7 @@ const submit = async () => {
                 <div class="lg:mt-0 lg:flex-shrink-0">
                   <form @submit.prevent="submit" class="relative w-full mt-6 space-y-5">
                     <input
-                      type="text"
+                      type="password"
                       class="block w-full px-4 py-4 mt-2 text-xl placeholder-gray-400 bg-gray-200 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-600 focus:ring-opacity-50"
                       v-model="v$.privateKey.$model"
                       placeholder="Private Key"
