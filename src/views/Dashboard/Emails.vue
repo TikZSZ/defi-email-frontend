@@ -5,12 +5,13 @@ import {
   topicMessages,
 } from "@tikz/hedera-mirror-node-ts";
 import { onBeforeRouteUpdate,useRouter } from "vue-router";
-import { ref } from "vue";
+import { ref ,toRefs} from "vue";
 import { localKeys } from "@/misc/localstorage/setKeys";
 import Loading from "@/components/Loading.vue";
 import LoadingButton from "@/components/LoadingButton.vue";
 import { decryptMessages } from "@/misc/decryptMessages";
 import { Message} from "@/misc/interface/Message"
+import { useStore } from "@/store";
 
 const props = defineProps<{ topicId: string }>();
 const client = new Client("https://testnet.mirrornode.hedera.com/");
@@ -18,7 +19,7 @@ const msgCursor = topicMessages(client)
   .setLimit(10)
   .order("desc")
   .setTopicId(props.topicId);
-
+const store = toRefs(useStore())
 const loading = ref(false);
 const hasMore = ref<boolean>(false);
 const msgs = ref<(Message & {x25519_public_key:string})[] | null>([]);
@@ -106,11 +107,16 @@ onBeforeRouteUpdate(async (to,from,next) => {
         You have reached the end
       </div>
       <Loading :active="loading" class="mb-10 mt-2 w-full sm:px-4" />
+      <!-- @click="router.push(`/dashboard/email?subject=${msg.subject}&date=${msg.date}&body=${msg.body}&key=${msg.x25519_public_key}&topicId=${msg.topicId}`)" -->
       <div
         v-if="msgs"
         v-for="msg of msgs"
         class="anim"
-        @click="router.push(`/dashboard/email?subject=${msg.subject}&date=${msg.date}&body=${msg.body}&key=${msg.x25519_public_key}&topicId=${msg.topicId}`)"
+        @click="()=>{
+          store.message.value = msg
+          router.push(`/dashboard/email`)
+        }"
+        
       >
         <div
           class="px-2 md:px-10 py-3 flex justify-between bg-gray-100 w-full transition-all mx-auto hover:shadow-xl hover:bg-white shadow-inner relative rounded-md mt-2 border-2 border-gray-300 transform-gpu"

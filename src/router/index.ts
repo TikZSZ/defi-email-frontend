@@ -63,13 +63,6 @@ const router = createRouter({
           path: "email",
           name: "Email",
           component: Email,
-          props:(record) => {
-            return {
-              body:record.query['body'],
-              subject:record.query['subject'],
-              date:record.query['date']
-            }
-          },
         }
         
 			],	

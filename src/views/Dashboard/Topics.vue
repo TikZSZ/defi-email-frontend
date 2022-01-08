@@ -47,7 +47,7 @@ async function deleteTopic(id:number){
 		<Loading :active="!topics" />
 		<div v-if="topics && topics.length === 0" class="bg-white min-h-screen">
 			<div
-				class="lg:flex lg:items-center lg:justify-between w-full mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 z-20"
+				class="lg:flex lg:items-center lg:justify-between w-full mx-auto px-4 sm:px-6  lg:px-8 z-20"
 			>
 				<h2 class="text-3xl  font-extrabold text-black  sm:text-4xl">
 					<span class="block">Want to receive emails ?</span>

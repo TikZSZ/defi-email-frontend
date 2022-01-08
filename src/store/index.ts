@@ -3,7 +3,7 @@ import { RouteLocationNormalized, Router } from "vue-router";
 import api from "@/misc/request/api";
 import { server } from "@/misc/request/server";
 import { localKeys } from "@/misc/localstorage/setKeys";
-
+import { Message} from "@/misc/interface/Message"
 let msgToSign = "bills";
 
 interface AuthResponse {
@@ -19,6 +19,7 @@ export const useStore = defineStore("main", {
     accountId: null as string | null,
     name: null as string | null,
     currentPath: "/home",
+    message:null as Message & {x25519_public_key:string}|null
   }),
   actions: {
     async logOut(route: RouteLocationNormalized, router: Router) {
