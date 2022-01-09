@@ -17,8 +17,8 @@ const login = async () => {
     let eC = err.response?.status || 500
     hasError.value = true
     if (eC === 404 || eC === 401 ) errorMessage.value = 'Invalid credentials'
+    else if(err.name === 'BadKeyError') errorMessage.value = 'Invalid key'
     else errorMessage.value = 'Oops! something went wrong try again later'
-    if(err.name === 'BadKeyError') errorMessage.value = 'Invalid key'
   }
 }
 

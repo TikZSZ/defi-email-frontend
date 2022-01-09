@@ -15,6 +15,10 @@ useResizeObserver(el, (entries) => {
   store.isMobile.value = width < 768
 })
 
+const getInitialAuth = async () => {
+  await store.checkAuth.value()
+}
+
 
 </script>
 
