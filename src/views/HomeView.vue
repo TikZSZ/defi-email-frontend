@@ -316,7 +316,7 @@ const store = toRefs(useStore())
       <div class="grid grid-cols-1 gap-0 text-gray-600 md:grid-cols-2 md:gap-16">
         <div>
           <h5 class="mt-10 mb-3 font-semibold text-gray-900">What is dMail</h5>
-          <p>
+          <p class="text-gray-600">
             dMail stands for decentralized email, its a platform for untraceable, and secure email powered by
             <a
               href="https://hedera.com/"
@@ -328,22 +328,22 @@ const store = toRefs(useStore())
             ></a>
           </p>
           <h5 class="mt-10 mb-3 font-semibold text-gray-900">Can I try it for Free?</h5>
-          <p>Absolutely, you can try out dMail for free its a open source project!</p>
+          <p class="text-gray-600">Absolutely, you can try out dMail for free its a open source project!</p>
 
           <h5 class="mt-10 mb-3 font-semibold text-gray-900">What is a Topic?</h5>
-          <p>
+          <p class="text-gray-600">
             A topic is like a email address which others can use to send emails to you.
             Topics are native feature of hedera hashgraph the underlying decentralized network for dMail
           </p>
         </div>
         <div>
           <h5 class="mt-10 mb-3 font-semibold text-gray-900">How do i start using dMail</h5>
-          <p>To use dMail just sign up and create a topic and share Topic ID and your public key to potential senders. Use compose section in dashboard to send emails.</p>
+          <p class="text-gray-600">To use dMail just sign up and create a topic and share Topic ID and your public key to potential senders. Use compose section in dashboard to send emails.</p>
 
           <h5
             class="mt-10 mb-3 font-semibold text-gray-900"
           >What is the underlying scheme used for End to End Encryption?</h5>
-          <p>
+          <p class="text-gray-600">
             dMail simplifies the process of key management by converting hedera
             ed25519
             <a
@@ -369,30 +369,6 @@ const store = toRefs(useStore())
             >Libsodium</a> (wasm-wrapper)
             is used under the hood to perform these operations
           </p>
-
-          <!-- <h5 class="mt-10 mb-3 font-semibold text-gray-900">What is the license on the pages?</h5>
-					<p>
-						You have unlimited use to the templates used in Tails; however, you cannot re-use the templates to sell for
-						others to use.
-          </p>-->
-
-          <!-- <h5
-						class="mt-10 mb-3 font-semibold text-gray-900"
-					>Can I cancel my account if I not longer need it?</h5>
-					<p>
-						Of course, you can feel free to cancel your account at anytime, and you can feel free to come back and
-						upgrade again whenever you're ready.
-          </p>-->
-
-          <!-- <h5 class="mt-10 mb-3 font-semibold text-gray-900">What if I need help with my project?</h5>
-					<p>
-						If you need assistance implementing the templates into your project you can contact support or you can visit
-						our
-						<a
-							href="https://devdojo.com/questions"
-							class="text-indigo-500 underline"
-						>question section</a>.
-          </p>-->
         </div>
       </div>
     </div>

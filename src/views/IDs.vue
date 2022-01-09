@@ -54,7 +54,7 @@ async function getNext(){
 <template>
   <div class="p-10 bg-gray-100 shadow-2xl" style="min-height: 87vh;">
     <div class="mb-4 ">
-      <div class="flex flex-col w-1/4 mx-auto">
+      <div class="flex flex-col md:w-1/4 mx-auto">
         <label for="">Search by Topic ID</label>
         <input type="text" placeholder="Topic ID"
           class="px-4 py-2 mt-2 rounded-lg ring focus:outline-none"
@@ -64,7 +64,7 @@ async function getNext(){
         >
       </div>
     </div>
-    <div class="mx-auto w-1/4 mb-5">
+    <div class="mx-auto sm:w-1/4 mb-5">
       <LoadingButton 
       name="Fetch More" 
       @click="getNext"
@@ -72,7 +72,7 @@ async function getNext(){
       v-if="hasMore"
       :disabled="disabled"/>
     </div>
-    <Loading :active="topics === null" />
+    <Loading :active="topics === null" style="min-width: 40vh;" />
     <div class="grid  grid-cols-1 lg:grid-cols-2 xl:grid-cols-3  gap-4">
       <div class="bg-white p-3 shadow-xl  selection:text-white selection:rounded-xl selection:bg-rose-500  transition-shadow  hover:shadow-2xl border-1 border-gray-100 rounded-xl"
       v-for="topic of topics"

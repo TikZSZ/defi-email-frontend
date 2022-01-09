@@ -15,6 +15,7 @@ import { encrypt } from "@/misc/encrypt";
 import { decodeUTF8 } from "tweetnacl-util";
 import { getChunks } from "@/misc/getChunks";
 import { Message} from "@/misc/interface/Message"
+import { validKey } from "@/misc/validKey";
 
 const prompt = ref(false);
 const router = useRouter();
@@ -31,7 +32,7 @@ const rules: { [key in keyof typeof submitData]: any } = {
   topicId: validAccountId,
   message: { required },
   subject: { required },
-  x25519_public_key: { required },
+  x25519_public_key: validKey(44),
 }
 
 const route = useRoute()
@@ -50,12 +51,12 @@ const submit = async () => {
   if (!isValid) return
   const privateKey = localKeys.getKeys.value.privateKey
   if (!privateKey) return prompt.value = true;
-  return sign(privateKey)
+  return send(privateKey)
 };
 
 
 
-const sign = async (privateKey: string) => {
+const send = async (privateKey: string) => {
   disabled.value = true
   try {
     const { subject, message, x25519_public_key } = submitData
@@ -94,7 +95,7 @@ const sign = async (privateKey: string) => {
   <div class="w-full bg-white">
     <div class="mx-auto max-w-7xl">
       <!-- Prompt -->
-      <Prompt v-if="prompt" :sign="sign" :disabled="disabled" />
+      <Prompt v-if="prompt" :sign="send" :disabled="disabled" />
       <div class="flex flex-col lg:flex-col" v-show="!prompt">
         <!-- Upper Div -->
         <div class="w-full bg-white">

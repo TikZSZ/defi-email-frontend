@@ -27,6 +27,16 @@ const decrypt = (
   return decryptedMessage;
 };
 
+function parseMessage(msg:string,key:string){
+  try{
+    return {...JSON.parse(msg),x25519_public_key:key}
+  }catch(err){
+    return {
+      subject:"Couldn't parse message"
+    }
+  }
+}
+
 export const decryptMessages = ( 
   consensusMsgs: MessagesResponse["messages"], 
   privateKey: string
@@ -43,9 +53,13 @@ export const decryptMessages = (
         encodeUTF8(base64DecodedMsg.subarray(2))
       );
       const msg = decrypt( message, privateKey, ed25519_public_key, x25519_public_key);
-      if (msg === null) continue;
-      decryptedMessage = {...JSON.parse(msg),x25519_public_key};
-    } else {
+      if (!msg) {
+        decryptedMessages.push({subject:'Error: Cannot Decrypt Invalid Keys'})
+        continue
+      };
+      decryptedMessages.push(parseMessage(msg,x25519_public_key))
+    } 
+    else {
       if (chunks + i > consensusMsgs.length) break;
       let completeMsg = "";
       for (let j = 0; j < chunks; j++) {
@@ -60,10 +74,13 @@ export const decryptMessages = (
       const { message, x25519_public_key, ed25519_public_key } = JSON.parse(completeMsg);
       const msg = decrypt( message, privateKey, ed25519_public_key, x25519_public_key);
       i += chunks - 1;
-      if (msg === null) continue;
-      decryptedMessage =  {...JSON.parse(msg),x25519_public_key};
+      if (!msg) {
+        decryptedMessages.push({subject:'Error: Cannot Decrypt Invalid Keys'})
+        continue
+      };
+      decryptedMessages.push(parseMessage(msg,x25519_public_key))
     }
-    if(decryptedMessage) decryptedMessages.push(decryptedMessage)
   }
   return decryptedMessages;
 };
+

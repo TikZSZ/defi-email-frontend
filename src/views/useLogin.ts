@@ -2,9 +2,10 @@ import { useStore } from '@/store';
 import { computed, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import useVuelidate from "@vuelidate/core";
-import { required, minLength, } from "@vuelidate/validators";
+import { required, minLength, maxLength, } from "@vuelidate/validators";
 import { helpers } from "@vuelidate/validators";
 import { validAccountId } from '@/misc/validUserAccID';
+import { validKey } from '@/misc/validKey';
 
 export default function(){
 
@@ -17,7 +18,7 @@ export default function(){
   
   const rules = {
     userAccountId: validAccountId, // Matches state.firstName
-    privateKey: { required:helpers.withMessage('Private Key is required',required),minLength:minLength(80) }, // Matches state.lastName
+    privateKey: validKey(96), // Matches state.lastName
   }
   const v$ = useVuelidate(rules, submitData)
 

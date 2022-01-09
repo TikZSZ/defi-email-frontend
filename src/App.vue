@@ -16,7 +16,6 @@ useResizeObserver(el, (entries) => {
 })
 
 
-
 </script>
 
 <template>

@@ -36,6 +36,8 @@ const fetch = async () => {
       rawMessages.value["messages"].reverse(),
       privateKey!
     ).reverse();
+    console.log(msgs.value);
+    
   } catch (err) {
     console.log(err);
   }

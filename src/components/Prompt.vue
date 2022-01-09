@@ -1,16 +1,15 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue';
 import useVuelidate from "@vuelidate/core";
-import { required, minLength, } from "@vuelidate/validators";
 import ButtonSpinner from './ButtonSpinner.vue';
 import InputError from './InputError.vue';
-import { helpers } from "@vuelidate/validators";
 import { localKeys } from '@/misc/localstorage/setKeys';
+import { validKey } from '@/misc/validKey';
 
 const props = defineProps<{ sign: (privateKey: string) => void,disabled?:boolean }>()
 const privateKey = reactive({privateKey:''})
 const rules = {
-  privateKey:{required:helpers.withMessage('Private Key is required',required),minLength:minLength(80)}
+  privateKey:validKey(96)
 }
 const v$ = useVuelidate(rules,privateKey)
 const submit = async () => {

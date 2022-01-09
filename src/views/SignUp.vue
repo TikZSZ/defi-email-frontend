@@ -4,11 +4,12 @@ import { useStore } from "@/store";
 import { useRouter } from "vue-router";
 import Prompt from "@/components/Prompt.vue";
 import useVuelidate from "@vuelidate/core";
-import { required, minLength, maxLength,helpers } from "@vuelidate/validators";
+import { required, } from "@vuelidate/validators";
 import { validAccountId } from "@/misc/validUserAccID";
 import InputError from "@/components/InputError.vue";
 import { X25519PrivateKey } from "@/misc/cryptography/encryption";
-import { useLocalStorage } from "@vueuse/core"
+import { validKey } from "@/misc/validKey";
+import Error from "@/components/Error.vue";
 
 const prompt = ref(false);
 
@@ -24,9 +25,10 @@ const submitData = reactive({
 const rules: { [key in keyof typeof submitData]: any } = {
   name: { required },
   userAccountId: validAccountId,
-  public_key: { required, minLength: helpers.withMessage('Public key should be 88 characters',minLength(88)) ,maxLength:helpers.withMessage('Public key should be 88 characters',maxLength(88)) }
+  public_key: validKey(88)
 }
-
+const hasError = ref(false)
+const errorMessage = ref('')
 const v$ = useVuelidate(rules, submitData)
 
 const submit = async () => {
@@ -38,14 +40,19 @@ const disabled = ref(false)
 
 const sign = async (privateKey: string) => {
   disabled.value = true
+  hasError.value = false
   try {
     const x25519_public_key = X25519PrivateKey.fromEdd25519PrivateKey(privateKey).publicKey.toString()
-
     await useStore().submitSignUp(privateKey, { x25519_public_key: x25519_public_key, ...submitData }, router)
-    prompt.value = false;
-  } catch (err) {
+  } catch (err:any) {
     disabled.value = false
+    let eC = err.response?.status
+    hasError.value = true
+    if(eC === 403) errorMessage.value = 'User already exists'
+    if(eC === 401) errorMessage.value = 'Credentials mismatch'
+    console.log(err);
   }
+  prompt.value = false;
 };
 </script>
 
@@ -96,6 +103,7 @@ const sign = async (privateKey: string) => {
               <router-link to="/signin" href="#_" class="text-blue-600 underline">sign in</router-link>
             </p>
             <form @submit.prevent="submit" class="relative w-full mt-10 space-y-8">
+              <Error :msg="errorMessage" :active="hasError"  class="rounded-b-xl"></Error>
               <div class="relative">
                 <label class="font-medium text-gray-900">
                   Name
