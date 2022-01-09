@@ -4,8 +4,9 @@ import { useStore } from "@/store";
 import { toRefs } from "vue";
 import useLogin from "./useLogin";
 import Footer from "@/components/Footer.vue";
+import Error from "@/components/Error.vue";
 
-const { submit, v$, disabled } = useLogin();
+const { submit, v$, disabled,hasError,errorMessage } = useLogin();
 const store = toRefs(useStore())
 
 </script>
@@ -262,6 +263,7 @@ const store = toRefs(useStore())
         </div>
 
         <div class="w-full mt-16 md:mt-0 md:w-2/5">
+          <Error :active="hasError" :msg="errorMessage"/>
           <form
             class="relative z-10 h-auto p-8 py-10 overflow-hidden bg-white border-b-2 border-gray-300 rounded-lg shadow-2xl px-7"
             @submit.prevent="submit"

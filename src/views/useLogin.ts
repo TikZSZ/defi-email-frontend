@@ -1,8 +1,8 @@
 import { useStore } from '@/store';
-import { computed, reactive } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import useVuelidate from "@vuelidate/core";
-import { required, minLength, maxLength, } from "@vuelidate/validators";
+import { required, minLength, } from "@vuelidate/validators";
 import { helpers } from "@vuelidate/validators";
 import { validAccountId } from '@/misc/validUserAccID';
 import { validKey } from '@/misc/validKey';
@@ -35,6 +35,20 @@ export default function(){
   const disabled = computed(()=>{
     return v$.value.userAccountId.$error || v$.value.privateKey.$error
   })  
-
-  return {submitData,submit,v$,disabled:disabled}
+  const hasError = ref(false)
+  const errorMessage = ref('')
+  const login = async () => {
+    hasError.value = false
+    try{
+      await submit()
+    }catch(err:any){
+      console.log({err});
+      let eC = err.response?.status || 500
+      hasError.value = true
+      if (eC === 404 || eC === 401 ) errorMessage.value = 'Invalid credentials'
+      else if(err.name === 'BadKeyError') errorMessage.value = 'Invalid key'
+      else errorMessage.value = 'Oops! something went wrong try again later'
+    }
+  }
+  return {submitData,submit:login,v$,disabled:disabled,hasError,errorMessage}
 }

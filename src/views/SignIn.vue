@@ -5,22 +5,8 @@ import InputError from "@/components/InputError.vue";
 import { ref } from "vue";
 import useLogin from "./useLogin";
 
-const { submit, v$,disabled } = useLogin();
-const hasError = ref(false)
-const errorMessage = ref('')
-const login = async () => {
-  hasError.value = false
-  try{
-    await submit()
-  }catch(err:any){
-    console.log({err});
-    let eC = err.response?.status || 500
-    hasError.value = true
-    if (eC === 404 || eC === 401 ) errorMessage.value = 'Invalid credentials'
-    else if(err.name === 'BadKeyError') errorMessage.value = 'Invalid key'
-    else errorMessage.value = 'Oops! something went wrong try again later'
-  }
-}
+const { submit, v$,disabled,hasError,errorMessage } = useLogin();
+
 
 </script>
 
@@ -49,7 +35,7 @@ const login = async () => {
 					<form
 						class="relative z-10 h-auto p-8 py-10 overflow-hidden bg-white border-b-2 border-gray-300 rounded-lg shadow-2xl px-7"
 						@submit.prevent="() => {
-							login()
+							submit()
 						}"
 					>
 						<div>
