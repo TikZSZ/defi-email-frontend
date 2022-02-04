@@ -20,6 +20,7 @@ import { validKey } from "@/misc/validKey";
 const prompt = ref(false);
 const router = useRouter();
 const disabled = ref(false);
+const store = useStore()
 
 const submitData = reactive({
   topicId: '',
@@ -36,8 +37,8 @@ const rules: { [key in keyof typeof submitData]: any } = {
 }
 
 const route = useRoute()
-Object.keys(route.query).includes('topicId') && (submitData.topicId = route.query['topicId'] as string)
-Object.keys(route.query).includes('key') && (submitData.x25519_public_key = route.query['key'] as string)
+Object.keys(route.query).includes('topicId') && store.message && store.message.topicId && (submitData.topicId = store.message?.topicId as string)
+Object.keys(route.query).includes('key') && store.message && store.message.x25519_public_key && (submitData.x25519_public_key = store.message?.x25519_public_key as string)
 
 
 const v$ = useVuelidate(rules, submitData)
